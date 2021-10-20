@@ -1,18 +1,13 @@
 package pl.qaaacademy.restassured.shop_api;
 
 import io.restassured.http.ContentType;
-import io.restassured.specification.Argument;
-import org.testng.Assert;
+import io.restassured.response.Response;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Filter;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.ResponseAwareMatcherComposer.and;
 import static org.hamcrest.Matchers.*;
 
 public class BasicProductAPIVerificationTest {
@@ -35,6 +30,7 @@ public class BasicProductAPIVerificationTest {
                 .when().post(baseURI + basePath)
                 .then().log().all()
                 .statusLine(containsString("OK"));
+
     }
 
     @Test
@@ -42,7 +38,7 @@ public class BasicProductAPIVerificationTest {
         Float newPrice = 9.3f;
         HashMap<String, Object> productData = new HashMap<>();
         productData.put("description", "Banana");
-        productData.put("id", "3");
+        productData.put("id", "2");
         productData.put("manufacturer", 1);
         productData.put("price", newPrice);
 
@@ -57,6 +53,7 @@ public class BasicProductAPIVerificationTest {
     public void shouldGetAllProducts(){
         when().get(baseURI + basePath)
                 .then().log().all()
+                .assertThat()
                 .statusCode(200);
     }
 
@@ -91,15 +88,33 @@ public class BasicProductAPIVerificationTest {
     @Test
     public void shouldDeleteCoffeeProduct(){
         //TODO
-        String coffeeID = from(json).getString("id");
+        String coffeeID = given().contentType(ContentType.JSON)
+                .body("{\n" +
+                        "    \"description\": \"Coffee\",\n" +
+                        "    \"id\": \"\",\n" +
+                        "    \"manufacturer\": 4,\n" +
+                        "    \"price\": 31.2\n" +
+                        "}").log().body()
+                .when()
+                .post(baseURI+basePath)
+                .then()
+                .extract()
+                .path("id").toString();
 
-        System.out.println(coffeeID);
-
-
-        /*when().delete(baseURI + basePath)
+        when().get(baseURI + basePath)
                 .then().log().all()
-                .statusCode(200)
-                .statusLine(containsString("OK"));*/
+                .assertThat()
+                .statusCode(200);
+
+        when().delete(baseURI + basePath + "/" +coffeeID)
+                .then()
+                .assertThat()
+                .statusCode(200);
+
+        when().get(baseURI + basePath)
+                .then().log().all()
+                .assertThat()
+                .statusCode(200);
 
     }
 }
