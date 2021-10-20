@@ -1,7 +1,6 @@
 package pl.qaaacademy.restassured.shop_api;
 
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -88,7 +87,7 @@ public class BasicProductAPIVerificationTest {
     @Test
     public void shouldDeleteCoffeeProduct(){
         //TODO
-        String coffeeID = given().contentType(ContentType.JSON)
+        /*String coffeeID = given().contentType(ContentType.JSON)
                 .body("{\n" +
                         "    \"description\": \"Coffee\",\n" +
                         "    \"id\": \"\",\n" +
@@ -114,7 +113,29 @@ public class BasicProductAPIVerificationTest {
         when().get(baseURI + basePath)
                 .then().log().all()
                 .assertThat()
-                .statusCode(200);
+                .statusCode(200);*/
 
+        String allID = given().param("", "Coffee")
+                .when().get(baseURI + basePath)
+                .then().contentType(ContentType.JSON)
+                .extract().path("id").toString();
+
+        String[] arrayOFAllID = allID.split(", ");
+
+        String coffeeID = "";
+
+        for (String iDs : arrayOFAllID) {
+            if (iDs.contains("]") && iDs.length() > 10){
+                coffeeID = iDs.replace("]","");
+                System.out.println(coffeeID);
+            }
+        }
+
+        when().delete(baseURI + basePath + "/" +coffeeID)
+                .then().log().all()
+                .assertThat()
+                .statusCode(200);
     }
+
+
 }
