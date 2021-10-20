@@ -97,7 +97,7 @@ public class BasicProductAPIVerificationTest {
                         "}").log().body()
                 .when()
                 .post(baseURI+basePath)
-                .then()
+                .then().log().all()
                 .extract()
                 .path("id").toString();
 
