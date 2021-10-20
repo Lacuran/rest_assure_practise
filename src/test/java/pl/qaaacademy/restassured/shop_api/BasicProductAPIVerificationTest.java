@@ -1,6 +1,7 @@
 package pl.qaaacademy.restassured.shop_api;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -115,10 +116,11 @@ public class BasicProductAPIVerificationTest {
                 .assertThat()
                 .statusCode(200);*/
 
-        String allID = given().param("", "Coffee")
+        String allID = given()
                 .when().get(baseURI + basePath)
                 .then().contentType(ContentType.JSON)
                 .extract().path("id").toString();
+        System.out.println(allID);
 
         String[] arrayOFAllID = allID.split(", ");
 
@@ -127,9 +129,11 @@ public class BasicProductAPIVerificationTest {
         for (String iDs : arrayOFAllID) {
             if (iDs.contains("]") && iDs.length() > 10){
                 coffeeID = iDs.replace("]","");
-                System.out.println(coffeeID);
+            } else if (iDs.length() > 10){
+                coffeeID = iDs;
             }
         }
+        System.out.println(coffeeID);
 
         when().delete(baseURI + basePath + "/" +coffeeID)
                 .then().log().all()
