@@ -1,9 +1,11 @@
 package pl.qaaacademy.restassured.shop_api;
 
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
+import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+import pl.qaaacademy.restasured.shop_api.customers.Product;
 
 import java.util.HashMap;
 
@@ -11,6 +13,8 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 public class BasicProductAPIVerificationTest {
+
+    private final String SEPARATOR = "/";
 
     @BeforeTest
     public void setup(){
@@ -59,7 +63,6 @@ public class BasicProductAPIVerificationTest {
 
     @Test
     public void shouldContainPeachAndStrawberry(){
-        //TODO
         String hasPeach = "Peach";
         String hasStrawberry = "Strawberry";
 
@@ -72,23 +75,22 @@ public class BasicProductAPIVerificationTest {
 
     @Test
     public void shouldVerifyStrawberryPrice(){
-        //TODO
         Float expectedPrice = 18.3f;
-        String strawberryID = "/5";
+        String strawberryID = "5";
+        String pricePath = "price";
 
-        when().get(baseURI + basePath + strawberryID)
+        when().get(baseURI + basePath + SEPARATOR + strawberryID)
                 .then()
                 .log().all()
                 .assertThat()
-                .body("price", equalTo(expectedPrice));
+                .body(pricePath, equalTo(expectedPrice));
 
 
     }
 
     @Test
     public void shouldDeleteCoffeeProduct(){
-        //TODO
-        /*String coffeeID = given().contentType(ContentType.JSON)
+        String coffeeID = given().contentType(ContentType.JSON)
                 .body("{\n" +
                         "    \"description\": \"Coffee\",\n" +
                         "    \"id\": \"\",\n" +
@@ -98,25 +100,15 @@ public class BasicProductAPIVerificationTest {
                 .when()
                 .post(baseURI+basePath)
                 .then().log().all()
-                .extract()
-                .path("id").toString();
+                .extract().body().jsonPath().get("id");
+//                .path("id").toString();
 
-        when().get(baseURI + basePath)
-                .then().log().all()
-                .assertThat()
-                .statusCode(200);
-
-        when().delete(baseURI + basePath + "/" +coffeeID)
+        when().delete(baseURI + basePath + SEPARATOR + coffeeID)
                 .then()
-                .assertThat()
-                .statusCode(200);
+                .statusCode(200)
+                .body(equalTo(String.valueOf(true)));
 
-        when().get(baseURI + basePath)
-                .then().log().all()
-                .assertThat()
-                .statusCode(200);*/
-
-        String allID = given()
+        /*String allID = given()
                 .when().get(baseURI + basePath)
                 .then().contentType(ContentType.JSON)
                 .extract().path("id").toString();
@@ -135,11 +127,39 @@ public class BasicProductAPIVerificationTest {
         }
         System.out.println(coffeeID);
 
-        when().delete(baseURI + basePath + "/" +coffeeID)
+        when().delete(baseURI + basePath + "/" + coffeeID)
                 .then().log().all()
                 .assertThat()
-                .statusCode(200);
+                .statusCode(200);*/
     }
 
+    @Test
+    public void extractedProductShouldHaveExpectedDescription(){
+        String productID = "3";
+        String expectedDescription = "Grapes";
+
+        Product grapes = given()
+                .when().get(baseURI + basePath + SEPARATOR + productID)
+                .then().extract().body().as(Product.class);
+
+        Assert.assertEquals(grapes.getDescription(), expectedDescription);
+    }
+
+    @Test
+    public void extractedProductShouldHaveExpectedPriceAndDescription(){
+        String productID = "7";
+        String expectedDescription = "Orange";
+        float expectedPrice = 10.5f;
+
+        Product orange = given()
+                .when().get(baseURI + basePath + SEPARATOR + productID)
+                .then().extract().body().as(Product.class);
+
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals(orange.getDescription(), expectedDescription);
+        softAssert.assertEquals(orange.getPrice(), expectedPrice);
+        softAssert.assertAll();
+
+    }
 
 }
