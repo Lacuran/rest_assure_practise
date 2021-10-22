@@ -7,8 +7,8 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pl.qaaacademy.restasured.shop_api.customers.Product;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.*;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -176,12 +176,43 @@ public class BasicProductAPIVerificationTest {
 
     @Test
     public void shouldCreateProductUsingClassInstance(){
-        Product tea = new Product("Tea", "",69, 420);
+        Product tea = new Product("Tea", "",69, 420.69f);
 
         given().contentType(ContentType.JSON)
                 .body(tea)
                 .when().post()
                 .then().log().all()
                 .statusCode(200);
+    }
+
+    @Test
+    public void shouldGetItemBySearchingItAndDelete(){
+        List<Product> product = given()
+                .when().get(baseURI + basePath)
+                .then().extract().body().jsonPath().getList("findAll {it.description == 'Tea'}", Product.class);
+
+        String teaId = product.stream()
+                .map(Product::getId)
+                .findFirst()
+                .get();
+
+        System.out.println(teaId);
+
+        when().delete(baseURI + basePath + SEPARATOR + teaId)
+                .then().log().all()
+                .statusCode(200)
+                .body(equalTo(String.valueOf(true)));
+    }
+
+    @Test
+    public void shouldGetListOfProducts(){
+        List<Product> product = given()
+                .when().get(baseURI + basePath)
+                .then().extract().body().jsonPath().getList("",Product.class);
+
+        product.forEach(System.out::println);
+        int expecedSize = product.size();
+
+        Assert.assertEquals(product.size(),expecedSize);
     }
 }
