@@ -173,4 +173,15 @@ public class BasicProductAPIVerificationTest {
         System.out.println(map);
 
     }
+
+    @Test
+    public void shouldCreateProductUsingClassInstance(){
+        Product tea = new Product("Tea", "",69, 420);
+
+        given().contentType(ContentType.JSON)
+                .body(tea)
+                .when().post()
+                .then().log().all()
+                .statusCode(200);
+    }
 }
