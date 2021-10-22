@@ -1,12 +1,14 @@
 package pl.qaaacademy.restasured.shop_api.customers;
 
 public class Address {
-    private String city;
-    private String country;
-    private String phone;
     private String street;
     private String streetNumber;
     private int zipcode;
+    private String city;
+    private String country;
+    private String phone;
+
+
 
     public Address() {
     }
@@ -57,5 +59,17 @@ public class Address {
 
     public void setZipcode(int zipcode) {
         this.zipcode = zipcode;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "street='" + street + '\'' +
+                ", streetNumber='" + streetNumber + '\'' +
+                ", zipcode=" + zipcode +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
     }
 }

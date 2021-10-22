@@ -8,6 +8,7 @@ import org.testng.asserts.SoftAssert;
 import pl.qaaacademy.restasured.shop_api.customers.Product;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -162,4 +163,14 @@ public class BasicProductAPIVerificationTest {
 
     }
 
+    @Test
+    public void shouldReturnProductAsAHashMap(){
+        String productId = "6";
+        Map<String, String> map = given()
+                .when().get(baseURI + basePath + SEPARATOR + productId)
+                .then().extract().body().jsonPath().getMap("", String.class, String.class);
+        System.out.println(map.get("description"));
+        System.out.println(map);
+
+    }
 }

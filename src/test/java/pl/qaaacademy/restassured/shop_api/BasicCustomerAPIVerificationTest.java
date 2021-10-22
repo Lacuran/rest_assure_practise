@@ -66,6 +66,4 @@ public class BasicCustomerAPIVerificationTest {
                 .body(query,equalTo(expectedCity));
     }
 
-//    @Test
-//    public void
 }
