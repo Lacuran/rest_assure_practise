@@ -5,10 +5,11 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
-import pl.qaaacademy.restasured.shop_api.customers.Product;
+import pl.qaaacademy.restasured.shop_api.models.Product;
 
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -102,36 +103,13 @@ public class BasicProductAPIVerificationTest {
                 .post(baseURI+basePath)
                 .then().log().all()
                 .extract().body().jsonPath().get("id");
-//                .path("id").toString();
+
 
         when().delete(baseURI + basePath + SEPARATOR + coffeeID)
                 .then()
                 .statusCode(200)
                 .body(equalTo(String.valueOf(true)));
 
-        /*String allID = given()
-                .when().get(baseURI + basePath)
-                .then().contentType(ContentType.JSON)
-                .extract().path("id").toString();
-        System.out.println(allID);
-
-        String[] arrayOFAllID = allID.split(", ");
-
-        String coffeeID = "";
-
-        for (String iDs : arrayOFAllID) {
-            if (iDs.contains("]") && iDs.length() > 10){
-                coffeeID = iDs.replace("]","");
-            } else if (iDs.length() > 10){
-                coffeeID = iDs;
-            }
-        }
-        System.out.println(coffeeID);
-
-        when().delete(baseURI + basePath + "/" + coffeeID)
-                .then().log().all()
-                .assertThat()
-                .statusCode(200);*/
     }
 
     @Test
@@ -198,7 +176,7 @@ public class BasicProductAPIVerificationTest {
 
         System.out.println(teaId);
 
-        when().delete(baseURI + basePath + SEPARATOR + teaId)
+        when().delete(SEPARATOR + teaId)
                 .then().log().all()
                 .statusCode(200)
                 .body(equalTo(String.valueOf(true)));
@@ -206,13 +184,13 @@ public class BasicProductAPIVerificationTest {
 
     @Test
     public void shouldGetListOfProducts(){
+        int expectedSize = 15;
         List<Product> product = given()
                 .when().get(baseURI + basePath)
                 .then().extract().body().jsonPath().getList("",Product.class);
 
         product.forEach(System.out::println);
-        int expecedSize = product.size();
 
-        Assert.assertEquals(product.size(),expecedSize);
+        Assert.assertEquals(product.size(),expectedSize);
     }
 }

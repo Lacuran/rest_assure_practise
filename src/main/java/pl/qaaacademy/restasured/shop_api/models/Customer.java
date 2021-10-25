@@ -1,6 +1,4 @@
-package pl.qaaacademy.restasured.shop_api.customers;
-
-import java.util.List;
+package pl.qaaacademy.restasured.shop_api.models;
 
 public class Customer {
     private Address address;

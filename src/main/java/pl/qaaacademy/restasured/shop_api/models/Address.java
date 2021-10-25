@@ -1,4 +1,4 @@
-package pl.qaaacademy.restasured.shop_api.customers;
+package pl.qaaacademy.restasured.shop_api.models;
 
 public class Address {
     private String street;

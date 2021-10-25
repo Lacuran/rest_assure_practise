@@ -2,14 +2,11 @@ package pl.qaaacademy.restassured.shop_api;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pl.qaaacademy.restasured.shop_api.customers.Customer;
-import pl.qaaacademy.restasured.shop_api.customers.OrderItem;
-import pl.qaaacademy.restasured.shop_api.customers.Product;
+import pl.qaaacademy.restasured.shop_api.models.Customer;
+import pl.qaaacademy.restasured.shop_api.models.OrderItem;
+import pl.qaaacademy.restasured.shop_api.models.Product;
 
 import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.*;
 
