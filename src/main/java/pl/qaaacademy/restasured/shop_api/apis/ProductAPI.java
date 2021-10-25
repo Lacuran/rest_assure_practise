@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.equalTo;
 
 public class ProductAPI {
     
@@ -47,7 +48,7 @@ public class ProductAPI {
         String query = HOST + PRODUCTS;
         List<Product> product = given()
                 .when().get(query)
-                .then()
+                .then().log().body()
                 .extract().body().jsonPath().getList(path, Product.class);
 
         return product.stream()
@@ -72,7 +73,7 @@ public class ProductAPI {
 
         List<Product> product = given()
                 .when().get(query)
-                .then()
+                .then().log().body()
                 .extract().body().jsonPath().getList(path, Product.class);
 
         return product.stream()
@@ -111,5 +112,21 @@ public class ProductAPI {
                 .map(Product::getPrice)
                 .findFirst()
                 .get();
+    }
+
+    public String getProductDescription(String description) {
+        return getAllProduct().stream()
+                .map(Product::getDescription)
+                .filter(desc -> desc.equals(description))
+                .findFirst()
+                .get();
+    }
+
+    public String deleteProductById(String id) {
+        String query = HOST + PRODUCTS + SEPARATOR + id;
+        return when().delete(query)
+                .then().log().body()
+                .extract()
+                .body().asString();
     }
 }

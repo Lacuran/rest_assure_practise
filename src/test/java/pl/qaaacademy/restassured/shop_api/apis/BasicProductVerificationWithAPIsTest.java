@@ -3,6 +3,7 @@ package pl.qaaacademy.restassured.shop_api.apis;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import pl.qaaacademy.restasured.shop_api.apis.ProductAPI;
 import pl.qaaacademy.restasured.shop_api.enviroments.Environment;
 import pl.qaaacademy.restasured.shop_api.enviroments.EnvironmentManager;
@@ -28,8 +29,8 @@ public class BasicProductVerificationWithAPIsTest {
         String description = "Coffee";
         String id = "";
         int manufacturer = 4;
-        float price = 420.69f;
-        int expectedSize = 15;
+        float price = 100.69f;
+        int expectedSize = 16;
 
         productAPI.addNewProduct(description, id, manufacturer, price);
 
@@ -63,5 +64,57 @@ public class BasicProductVerificationWithAPIsTest {
         Float productPrice = productAPI.getProductPrice(description, manufacturer);
 
         Assert.assertEquals(productPrice, newPrice);
+    }
+
+    @Test
+    public void shouldContainsPeachAndStrawberry(){
+        String hasPeach = "Peach";
+        String hasStrawberry = "Strawberry";
+
+        String actualPeachProduct = productAPI.getProductDescription(hasPeach);
+        String actualStrawberryProduct = productAPI.getProductDescription(hasStrawberry);
+
+
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals(actualPeachProduct, hasPeach);
+        softAssert.assertEquals(actualStrawberryProduct, hasStrawberry);
+
+    }
+
+    @Test
+    public void extractedProductShouldHaveExpectedPriceAndDescription(){
+        String cherry = "Cherry";
+        float expectedPrice = 13.8f;
+
+        String actualDescription = productAPI.getProductDescription(cherry);
+        float actualPrice = productAPI.getProductPrice(cherry);
+
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals(actualDescription, cherry);
+        softAssert.assertEquals(actualPrice, expectedPrice);
+    }
+
+    @Test
+    public void shouldDeleteItemByItsID(){
+        String description = "Coffee";
+        String expectedDelete = "true";
+        String id = productAPI.getProductID(description);
+
+        String isDeleted = productAPI.deleteProductById(id);
+
+        Assert.assertEquals(isDeleted, expectedDelete);
+
+    }
+
+    @Test
+    public void shouldDeleteItemByItsIDAndManufacturer(){
+        String description = "Coffee";
+        String expectedDelete = "true";
+        int manufacturer = 4;
+        String id = productAPI.getProductID(description, manufacturer);
+
+        String isDeleted = productAPI.deleteProductById(id);
+
+        Assert.assertEquals(isDeleted, expectedDelete);
     }
 }
