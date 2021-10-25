@@ -5,10 +5,9 @@ import pl.qaaacademy.restasured.shop_api.enviroments.Environment;
 import pl.qaaacademy.restasured.shop_api.models.Product;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.equalTo;
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 
 public class ProductAPI {
     
